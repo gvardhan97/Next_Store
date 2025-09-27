@@ -1,121 +1,256 @@
-This is a full-stack e-commerce web application built with the **Next.js App Router**. It showcases a modern, high-performance online store with product browsing, a fully functional shopping cart, and a complete checkout experience powered by **Stripe**.
+# Next.js Store
 
-The project uses **Zustand** for efficient global state management and **Tailwind CSS** for a sleek, responsive user interface.
+A full-featured **Next.js (App Router)** storefront built as a learning project. It demonstrates a small production-style e-commerce stack with product management, user authentication, favorites & reviews, a shopping cart, Stripe checkout, image uploads (Supabase), and a Postgres + Prisma backend.
 
------
+> This README was written after a code-first review of the project structure and source files.
 
-Key Features
+---
 
-  * **Modern Tech Stack:** Built with Next.js 13+ (App Router) for server-side rendering, static site generation, and optimized performance.
-  * **Product Catalog:** Displays products fetched from a data source, with dedicated pages for individual product details.
-  * **Dynamic Routing:** Uses Next.js dynamic routes to generate unique pages for each product (e.g., `/product/[id]`).
-  * **Shopping Cart:** A fully persistent shopping cart that allows users to:
-      * Add and remove items.
-      * Increase or decrease item quantity.
-      * View a summary of all items and the total price.
-  * **State Management:** Utilizes **Zustand**, a lightweight and powerful state management library, to handle the cart's state across the entire application.
-  * **Secure Payments:** Integrates **Stripe Checkout** for a secure, seamless, and production-ready payment process.
-  * **Responsive Design:** Styled with **Tailwind CSS**, ensuring the application looks great and functions perfectly on all devices, from desktops to mobile phones.
-  * **Notifications:** Uses `react-hot-toast` to provide users with non-intrusive feedback for actions like adding an item to the cart.
+## Table of Contents
 
------
+* [What is this project](#what-is-this-project)
+* [Key features](#key-features)
+* [Tech stack (high level)](#tech-stack-high-level)
+* [Quickstart — run locally](#quickstart---run-locally)
+* [Environment variables](#environment-variables)
+* [.env.example](#envexample)
+* [Database & seeding](#database--seeding)
+* [How it’s organised (high level)](#how-its-organised-high-level)
+* [How it works (architecture notes)](#how-it-works-architecture-notes)
+* [Important implementation notes & gotchas](#important-implementation-notes--gotchas)
+* [Scripts](#scripts)
+* [Deployment notes](#deployment-notes)
+* [Contributing](#contributing)
+* [License](#license)
 
-Tech Stack
+---
 
-  * **Framework:** [Next.js](https://nextjs.org/)
-  * **Language:** [TypeScript](https://www.typescriptlang.org/)
-  * **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-  * **Payment Processing:** [Stripe](https://stripe.com/)
-  * **UI Notifications:** [React Hot Toast](https://react-hot-toast.com/)
+## What is this project
 
------
+A small but opinionated Next.js storefront using the App Router. It’s intended as a learning/boilerplate project and includes server-side database operations (Prisma), server actions, user auth (Clerk), image storage (Supabase), and Stripe-powered checkout.
 
-Getting Started
+Use it as a reference for how an App Router + Prisma + auth + payments flow can be structured in a modern Next.js app.
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+---
 
-Prerequisites
+## Key features
 
-Make sure you have the following installed on your system:
+* Product catalog (list, single product pages)
+* Admin CRUD for products (image upload + management)
+* Favorites (per-user)
+* Reviews (per-user, rating + comment)
+* Shopping cart persisted in the database per user
+* Checkout using **Stripe** (embedded checkout + server-side session creation)
+* Image storage and retrieval via **Supabase** storage
+* Authentication & user state via **Clerk**
+* Uses Prisma to model Product / Favorite / Review / Cart / CartItem / Order
+* UI built with shadcn-like components, Radix primitives and TailwindCSS
 
-  * [Node.js](https://nodejs.org/en/) (v18.x or later)
-  * [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
-  * A [Stripe](https://dashboard.stripe.com/register) account to get API keys.
+---
 
-Installation & Setup
+## Tech stack (high level)
 
-1.  **Clone the repository:**
+* **Next.js** (App Router)
+* **React 18** (server + client components)
+* **Prisma** + PostgreSQL (database)
+* **Clerk** for authentication
+* **Supabase** for image storage
+* **Stripe** for payments
+* **Tailwind CSS** + shadcn/Radix UI for UI components
+* TypeScript
 
-    ```sh
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
-    ```
+> See `package.json` for the exact package list used in this project.
 
-2.  **Install dependencies:**
+---
 
-    ```sh
-    npm install
-    ```
+## Quickstart — run locally
 
-    or
+**Prerequisites**
 
-    ```sh
-    yarn install
-    ```
+* Node.js (recommended: latest LTS — Node 18+ / 20+ works with the packages used)
+* A Postgres instance (local or managed)
+* (Optional) Supabase project for image upload
+* Clerk account (for auth) and Stripe account for payments
 
-3.  **Set up environment variables:**
-    Create a file named `.env.local` in the root of your project and add your Stripe API keys. You can find these in your [Stripe Developer Dashboard](https://dashboard.stripe.com/test/apikeys).
+Steps:
 
-    ```.env.local
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_PUBLISHABLE_KEY
-    STRIPE_SECRET_KEY=sk_test_YOUR_SECRET_KEY
-    ```
+1. Clone the repo
 
-      * `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: This is your client-side key.
-      * `STRIPE_SECRET_KEY`: This is your server-side key. **Never expose this key publicly.**
-
-4.  **Run the development server:**
-
-    ```sh
-    npm run dev
-    ```
-
-    or
-
-    ```sh
-    yarn dev
-    ```
-
-The application should now be running on [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000).
-
------
-
-## \#\# Project Structure Explained
-
-The project uses the Next.js App Router, which organizes the application's structure around folders within the `/app` directory.
-
-```
-/
-├── app/
-│   ├── api/stripe/         # API route for handling Stripe Checkout session creation
-│   ├── cart/               # Route for the shopping cart page
-│   ├── product/[id]/       # Dynamic route for individual product pages
-│   ├── layout.tsx          # Root layout for the application
-│   └── page.tsx            # The homepage component
-├── components/
-│   ├── Cart.tsx            # The main cart component (drawer/modal)
-│   ├── CheckoutButton.tsx  # Component for initiating the Stripe checkout
-│   ├── Navbar.tsx          # The website's navigation bar
-│   └── Product.tsx         # The card component for displaying a single product
-├── lib/
-│   └── stripe.ts           # Stripe server-side instance initialization
-├── public/                 # Static assets like images
-└── store/
-    └── useCartStore.ts     # Zustand store for managing cart state
+```bash
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
 ```
 
-  * **`/app`**: Contains all the routes, pages, and layouts. Each folder represents a URL segment.
-  * **`/app/api`**: This is where server-side API logic lives. The `/api/stripe` route is responsible for securely communicating with the Stripe API to create a payment session.
-  * **`/components`**: Holds all the reusable React components used throughout the application.
-  * **`/lib`**: Contains helper functions and library initializations, such as the server-side Stripe instance.
-  * **`/store`**: This directory contains the Zustand state management logic. `useCartStore.ts` defines the state and actions for the shopping cart (e.g., `addProduct`, `removeProduct`).
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Create a `.env.local` at the project root and add the environment variables (see next section)
+
+4. Initialize the database and Prisma client
+
+```bash
+# generate client and push schema to DB
+npx prisma generate
+npx prisma db push
+
+# optionally run migrations instead of db push if you prefer
+# npx prisma migrate dev --name init
+```
+
+5. Seed example products (the project includes `prisma/products.json` and a `prisma/seed.js` helper)
+
+```bash
+node prisma/seed.js
+# verify with prisma studio if you want
+npx prisma studio
+```
+
+6. Run the dev server
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Environment variables
+
+The project expects (at minimum) these variables to be defined in your environment (example names used in the project code):
+
+* `DATABASE_URL` — Postgres connection string (Prisma)
+* `DIRECT_URL` — optional direct DB URL used by Prisma if you use pgBouncer or Supabase DirectURL patterns
+* `SUPABASE_URL` — your Supabase project URL (used for image storage)
+* `SUPABASE_KEY` — key used to access Supabase storage from the server (keep secret)
+* `STRIPE_SECRET_KEY` — your Stripe secret key (server)
+* `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` — Stripe publishable key (client)
+* `ADMIN_USER_ID` — Clerk user id to mark admin operations (used in server actions)
+* Clerk environment variables — configure Clerk per their docs (dashboard) so that auth works in Next.js (set values in your environment as required by Clerk)
+
+**Important:** Do NOT commit `.env.local` to source control. Add it to `.gitignore`.
+
+---
+
+## .env.example
+
+```bash
+# Database
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+DIRECT_URL=postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+
+# Supabase (for image storage)
+SUPABASE_URL=https://your-supabase-instance.supabase.co
+SUPABASE_KEY=your-service-role-key
+
+# Stripe (payments)
+STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+
+# Clerk (authentication)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+CLERK_SECRET_KEY=your-clerk-secret-key
+
+# App settings
+ADMIN_USER_ID=your-clerk-user-id-for-admin
+```
+
+Use this template to create `.env.local` in your project root. Replace placeholders with your actual values.
+
+---
+
+## Database & seeding
+
+* Prisma schema is in `prisma/schema.prisma` and models: `Product`, `Favorite`, `Review`, `Cart`, `CartItem`, `Order`.
+* To populate example data the project includes `prisma/products.json` and `prisma/seed.js` — run `node prisma/seed.js` after `npx prisma db push`.
+
+---
+
+## How it’s organised (high level)
+
+```
+app/                 # Next.js App Router pages (server and client components)
+components/          # Re-usable UI and feature components
+prisma/              # Prisma schema, seed and example products.json
+utils/               # DB helper, supabase helper, server actions, zod schemas
+public/              # static assets
+styles/              # tailwind / global css
+```
+
+Key utilities worth scanning:
+
+* `utils/actions.ts` — server actions that drive the core product/cart/favorite/review flows
+* `utils/db.ts` — Prisma client singleton pattern (prevents connection explosion in dev)
+* `utils/supabase.ts` — image upload / delete helpers (bucket name configured in code)
+* `prisma/schema.prisma` — database models
+
+---
+
+## How it works (architecture notes)
+
+* The project uses **Next.js App Router** — top-level `app/layout.tsx` defines the `ClerkProvider` + `Providers` and common layout.
+* Data fetching and mutations are implemented as **server actions** and server-side helpers (see `utils/actions.ts`) — most actions run on the server and use the Prisma client directly.
+* Auth is provided by **Clerk**. Server-side functions call Clerk server helpers (e.g. `currentUser()` / `auth()`) for user context and authorization checks.
+* Images are uploaded to Supabase Storage via `utils/supabase.ts` and public URLs are returned/stored on the product record.
+* Checkout uses **Stripe**: the client requests a server-created checkout session (`/api/payment`) and then receives a `clientSecret` for the embedded checkout flow. After checkout completes the `/api/confirm` route marks the order `isPaid` and cleans up the cart.
+* Cart and order totals are computed & stored in the DB via `utils/actions` helper functions.
+
+---
+
+## Important implementation notes & gotchas
+
+* **Prisma in dev**: the repo uses a Prisma client singleton pattern (`utils/db.ts`) to avoid opening many DB connections during Hot Module Replacement (HMR). Keep that in place for local dev to prevent connection exhaustion.
+
+* **Image storage bucket**: the code expects a bucket name (the example uses `main-bucket` in `utils/supabase.ts`). Either create that bucket in Supabase or change the constant there.
+
+* **Admin checks**: admin routes/actions compare the current Clerk user id to `ADMIN_USER_ID`. Set that env var to one of your test Clerk account ids to allow admin actions.
+
+* **Next.js remote images**: `next.config.mjs` contains `remotePatterns` for `images.pexels.com`, Supabase hosts, and Clerk images — keep these hosts in `next.config.mjs` if you add other image sources.
+
+* **Build script runs Prisma generate**: the `build` script runs `npx prisma generate && next build` so ensure your DB/Prisma generator config is valid in CI and when deploying.
+
+---
+
+## Scripts
+
+Common commands (mirror what is in `package.json`):
+
+```bash
+npm run dev      # starts dev server (next dev)
+npm run build    # generates Prisma client and builds the app (npx prisma generate && next build)
+npm run start    # run production server (next start)
+npm run lint     # run lint checks (if configured)
+```
+
+---
+
+## Deployment notes
+
+* **Vercel** is a natural fit for App Router apps. When deploying:
+
+  * Set all environment variables in your Vercel project (DATABASE_URL, DIRECT_URL, SUPABASE_URL, SUPABASE_KEY, STRIPE keys, Clerk keys, ADMIN_USER_ID, etc.)
+  * Ensure your production DB is accessible from the deployment.
+  * The `build` step will run `npx prisma generate` — make sure Prisma has access to the schema generator and network.
+
+* If you host on other platforms, ensure environment variables and any storage (Supabase) are reachable from your server.
+
+---
+
+## Contributing
+
+If you want to adapt this for your own use or contribute back:
+
+* Keep sensitive values out of the repo (`.env.local`)
+* Seed and test with sample products before adding production data
+* Open PRs with small focused changes
+
+---
+
+## License
+
+This project is intended for learning. Add a license file if you publish or share it publicly (MIT is commonly used).
+
+---
