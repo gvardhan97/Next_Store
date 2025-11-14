@@ -60,17 +60,14 @@ I’ve structured it in a GitHub-friendly layout with headings + spaces for your
 ### 🏠 Home Page
 
 Shows the main product listing grid.
-
-![Home Page](<img width="1882" height="922" alt="image" src="https://github.com/user-attachments/assets/6dc36a77-3493-4ed6-bf47-35f44f1c97d1" />
-)
-
+![Home Page](./homepage.jpg)
 ---
 
 ### 📄 Product Page
 
 Single product view with images, price, details, reviews, and Add to Cart.
 
-![Product Page](<img width="926" height="949" alt="image" src="https://github.com/user-attachments/assets/2ca6b7d6-b9f2-4106-8672-4b3450b02e5d" />
+![Product Page](./single_product_page.jpg)
 )
 
 ---
@@ -79,35 +76,29 @@ Single product view with images, price, details, reviews, and Add to Cart.
 
 Displays all products marked as favorites by the user.
 
-![Favorites Page](<img width="1882" height="922" alt="image" src="https://github.com/user-attachments/assets/4efc3a62-9369-496a-b73a-9d0c32d62922" />
-)
 
+![Favorites Page](./favorites_pave.jpg)
 ---
 
 ### 🛒 Cart Page
 
 User's shopping cart with items, quantity controls, and total price.
 
-![Cart Page](<img width="1507" height="946" alt="image" src="https://github.com/user-attachments/assets/da3e31ef-dde4-4bf8-ba67-f4906a8e2f48" />
-)
-
+![Cart Page](./cart_page.jpg)
 ---
 
 ### 💳 Checkout (Stripe)
 
 Stripe Embedded Checkout used for processing payments.
 
-![Checkout](<img width="1507" height="946" alt="image" src="https://github.com/user-attachments/assets/84e7cd11-b6ea-4049-9f1e-f17e8463f6e4" />
-)
-
+![Checkout Page](./checkout_page.jpg)
 ---
 
 ### 🛠️ Admin Dashboard
 
 Admin panel for managing products (create, edit, delete).
 
-![Admin Dashboard](<img width="1575" height="897" alt="image" src="https://github.com/user-attachments/assets/543d616a-684e-4127-9a16-35695754d49e" />
-)
+![Admin Page](./admin_page.jpg)
 
 ---
 ## Tech stack (high level)
@@ -316,4 +307,5 @@ If you want to adapt this for your own use or contribute back:
 This project is intended for learning. Add a license file if you publish or share it publicly (MIT is commonly used).
 
 ---
+
 
