@@ -10,6 +10,7 @@ A full-featured **Next.js (App Router)** storefront built as a learning project.
 
 * [What is this project](#what-is-this-project)
 * [Key features](#key-features)
+* [Architecture](#Architecture)
 * [ScreenShots](#ScreenShots)
 * [Tech stack (high level)](#tech-stack-high-level)
 * [Quickstart — run locally](#quickstart---run-locally)
@@ -48,10 +49,15 @@ Use it as a reference for how an App Router + Prisma + auth + payments flow can 
 * UI built with shadcn-like components, Radix primitives and TailwindCSS
 
 ---
+## Architecture
+<img width="7232" height="7806" alt="diagram" src="https://github.com/user-attachments/assets/3cb1dec6-2ecc-407e-aadd-6ea67dbcd6fd" />
+
+---
 ## screenshots
 
 Here is a clean, professional **Screenshots section** you can paste directly into your README.
 I’ve structured it in a GitHub-friendly layout with headings + spaces for your images.
+
 
 ---
 
